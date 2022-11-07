@@ -13,4 +13,4 @@ date()
 
 I have been wanting to learn **R markdown** for a while but have lacked *time* and a *good way* to start learning. Now that I have chance to learn it as well as get better with R, I am very excited. I have used R for a while now, but my skills have relied on active googling. There is nothing wrong with active googling, but it felt nice to understand the background a little bit better and I am sure my data analysis will get better too. I learned some new functions such as spec and near during the first set of exercises. 
 
-[Here is a link to my GitHub repository] (https://github.com/laurapie/IODS-project)
+[Here is a link to my GitHub repository](https://github.com/laurapie/IODS-project)
