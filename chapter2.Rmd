@@ -1,4 +1,4 @@
-# Insert chapter 2 title here
+# Regression and model validation
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -9,5 +9,28 @@
 ```{r}
 date()
 ```
+# read the file
 
-Here we go again...
+```{r}
+list.files()
+student2014 <- read.csv("data2.csv", header = TRUE, sep = ",")
+dim(student2014)
+str(student2014)
+```
+ 
+# Data is from an international survey of Approaches to Learning, made possible by Teachers and is  used as a course material in
+# a course calles Introduction  to open data science. 
+# dataset has seven variables two of which are integers and four of which are numerical variables. One variable describing gender is categorical. 
+
+# variable contets briefly: 
+# gender = gender of the respondent
+# age = age of the respondent
+# attitude = Global attitude toward statistics/10
+# deep = mean of the values related to deep learning methods
+# stra = mean of the values related to strategic learning methods
+# surf = mean of the values related to surface learning methods
+# points = exam points
+
+
+
+
