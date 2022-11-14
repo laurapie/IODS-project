@@ -45,3 +45,46 @@ library("GGally")
 ggpairs(student2014, lower = list(combo = wrap("facethist", bins = 20)))
 ```
 
+# Significant correlations: a
+# attitude and points correlate (R = 0.437***)
+# deep and surf correlate (R = -0.324***)
+# stra and surf correlate (R = -0.161*)
+
+# Further focus on pairs with significant correlations and regression lines. 
+```{r}
+#Access the gglot2 library
+library(ggplot2)
+
+# initialize plot with data and aesthetic mapping
+p1 <- ggplot(student2014, aes(x = attitude, y = points))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  ggtitle("Student's attitude vs. exam points")
+
+p1
+
+```
+# Students that had a higher points with attitude obtained also higher exam points. 
+
+```{r}
+p2 <- ggplot(student2014, aes(x = deep, y = surf))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  ggtitle("Correlation between deep and surface learning methods")
+
+p2
+
+```
+
+# Students that used more surface learning techniques used less likely deep learning techniques. 
+
+```{r}
+p3 <- ggplot(student2014, aes(x = stra, y = surf))+
+  geom_point()+
+  geom_smooth(method = "lm")+
+  ggtitle("Correlation between strategic and surface learning methods")
+
+p3
+
+```
+# Students that used surface techniques used strategic techniques less likely. 
