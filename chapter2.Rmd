@@ -101,7 +101,7 @@ summary(my_model)
 
 ```
 
-# Only attitude seems to correlate with the exam points on *** (p<0.001)
+# Only attitude seems to correlate with the exam points (p = 1.34e-08, p<0.001)
 
 # Removing the excess of variables from the model 
 
@@ -111,4 +111,10 @@ summary(my_model2)
 
 ```
 
-# Now the model fits the data better
+# Now the model fits the data better. 
+# intercept 11.6372, slope 3.5255, p value tests if the estimates for the intercept and slope are equal to zero. In this case, p value
+# is even smaller than with the first model (p = 4.12e-09 p<0.001). Multiple R-squared indicates that 19 percent of the variation in
+# exam points is explained by the student's attitude. 
+
+
+# residuals should be uniformly distributed along the line 
