@@ -1,6 +1,6 @@
 # Regression and model validation
 
-*Describe the work you have done this week and summarize your learning.*
+This week I have worked on linear regression and learned more about how the markdown works. I had not realised that I do not need to start every note or text I write with a #, since I will write the code in chunks which leaves the rest of the script for notes. It felt rewarding to write this code and see the results in the html file. Otherwise I some technical issues colored this week. Firstly, I had some issues with pushing the changes to GitHub which I managed to fix  by always starting the new script with adding the personal access token. Secondly, the keyboard of my laptop broke partly resulting to a malfunction of the buttons in the middle of the keyboard. The problem still remains but luckily I managed to dumpster-dive myself a functioning keyboard. 
 
 - Describe your work and results clearly. 
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
@@ -9,12 +9,8 @@
 ```{r}
 date()
 ```
-# the token to fix the connection
 
-# usethis::create_github_token()
-gitcreds::gitcreds_set()
-
-# read the file
+## Reading the file to R
 
 ```{r}
 list.files()
@@ -22,21 +18,21 @@ student2014 <- read.csv("data2.csv", header = TRUE, sep = ",")
 dim(student2014)
 str(student2014)
 ```
+
+## Contents of the data
  
-# Data is from an international survey of Approaches to Learning, made possible by Teachers and is  used as a course material in
-# a course calles Introduction  to open data science. 
-# dataset has seven variables two of which are integers and four of which are numerical variables. One variable describing gender is categorical. 
+Data is from an international survey of approaches to learning, made possible by teachers. The data is used as a course material in a course called Introduction to Open Data Science and it consists of seven variables and 166 observations. 
 
-# variable contets briefly: 
-# gender = gender of the respondent
-# age = age of the respondent
-# attitude = Global attitude toward statistics/10
-# deep = mean of the values related to deep learning methods
-# stra = mean of the values related to strategic learning methods
-# surf = mean of the values related to surface learning methods
-# points = exam points
+### Variable contets briefly:
+* gender = gender of the respondent (categorical)
+* age = age of the respondent (integer)
+* attitude = Global attitude toward statistics/10 (numerical)
+* deep = mean of the values related to deep learning methods (numerical)
+* stra = mean of the values related to strategic learning methods (numerical)
+* surf = mean of the values related to surface learning methods (numerical)
+* points = exam points (integer)
 
-# Graphic overview
+## Graphic overview of the data
 
 ```{r}
 library("ggplot2")
@@ -45,12 +41,12 @@ library("GGally")
 ggpairs(student2014, lower = list(combo = wrap("facethist", bins = 20)))
 ```
 
-# Significant correlations: a
-# attitude and points correlate (R = 0.437***)
-# deep and surf correlate (R = -0.324***)
-# stra and surf correlate (R = -0.161*)
+### Significant correlations from the overview: 
+* attitude and points (R = 0.437***)
+* deep and surf (R = -0.324***)
+* stra and surf (R = -0.161*)
 
-# Further focus on pairs with significant correlations and regression lines. 
+### Further focus on pairs with significant correlations and regression lines. 
 ```{r}
 #Access the gglot2 library
 library(ggplot2)
@@ -65,7 +61,7 @@ p1
 
 ```
 
-# Students that had a higher points with attitude obtained also higher exam points. 
+ Students that had higher attitude scores obtained also higher exam points. 
 
 ```{r}
 p2 <- ggplot(student2014, aes(x = deep, y = surf))+
@@ -77,7 +73,7 @@ p2
 
 ```
 
-# Students that used more surface learning techniques used less likely deep learning techniques. 
+ Students that used more surface learning techniques used less likely deep learning techniques. 
 
 ```{r}
 p3 <- ggplot(student2014, aes(x = stra, y = surf))+
@@ -89,11 +85,11 @@ p3
 
 ```
 
-# Students that used surface techniques used strategic techniques less likely. 
+ Students that used surface techniques used strategic techniques less likely. 
 
-# Testing the model 
+## Testing the model
 
-# The selected three explanatory variables are: stra, surf and deep. Response variable is points
+The selected three explanatory variables are: stra, surf and deep. Response variable is called points. 
 
 ```{r}
 my_model <- lm(points ~ attitude + stra + surf + deep, data = student2014)
@@ -101,9 +97,9 @@ summary(my_model)
 
 ```
 
-# Only attitude seems to correlate with the exam points (p = 1.34e-08, p<0.001)
+Only attitude seems to correlate with the exam points (p = 1.34e-08, p<0.001). To make a model that fits better, I will remove the non-significant variables from the model. 
 
-# Removing the excess of variables from the model 
+## Removing the excess variables from the model 
 
 ```{r}
 my_model2 <- lm(points ~ attitude, data = student2014)
@@ -111,10 +107,12 @@ summary(my_model2)
 
 ```
 
-# Now the model fits the data better. 
-# intercept 11.6372, slope 3.5255, p value tests if the estimates for the intercept and slope are equal to zero. In this case, p value
-# is even smaller than with the first model (p = 4.12e-09 p<0.001). Multiple R-squared indicates that 19 percent of the variation in
-# exam points is explained by the student's attitude. 
+Now the model should fit the data better. Intercept is 11.6372 and slope is 3.5255. The p value tests whether the estimates for the intercept and slope are equal to zero eg. the variable has no effect in the model. In this case, p value is even smaller than in the first model (p = 4.12e-09 p<0.001) indicating that the student's attitude has an effect to exam points. Multiple R-squared indicates that 19 percent of the variation in exam points is explained by the student's attitude. 
 
+## Assumptions of the model based on diagnostic plots
+```{r}
+par(mfrow=c(2,2))
+plot(my_model2, which = c(1, 2, 5))
+```
 
-# residuals should be uniformly distributed along the line 
+Residuals vs. leverage provides information on whether there are influential data points that might disturb the model by being for example mistakes in the data. Residuals might be skewed since there is a change in the spread of the values with smaller leverage having higher spread than the ones with higher leverage. When looking at all of the plots, it seems like entries 145, 56 and 35 might be outliers, that should be checked in case of a mistake in the data. Otherwise qq-plot distribution is relatively close to the line. Also the residuals vs. fitted plot looks otherwise good. 
