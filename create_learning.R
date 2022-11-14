@@ -3,6 +3,8 @@
 # Kimmo Vehkalahti. 
 
 usethis::create_github_token()
+# remember to make sure that you are using the correct proect!
+
 library("tidyverse")
 
 # 1. Read and explore the data
