@@ -77,3 +77,4 @@ data3 <- read_csv("data2.csv")
 head(data3)
 dim(data3)
 
+# then, push to Github
