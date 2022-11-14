@@ -2,6 +2,7 @@
 # This is the second set of exerices for the IDOS course. The data was obtained from the course materials and has been provided by
 # Kimmo Vehkalahti. 
 
+usethis::create_github_token()
 library("tidyverse")
 
 # 1. Read and explore the data
@@ -76,7 +77,9 @@ list.files()
 data3 <- read_csv("data2.csv")
 head(data3)
 dim(data3)
+str(data3)
+setwd("/home/local/pielaura/Documents/zasemaemulaattori/Documents/kurssit/Introduction_to_open_data_science/excerices_1/IODS-project")
 
-# then, push to Github
-
+# then, push to github
+# seems like I have to add the token every time to avoid the password-asking problem. 
 

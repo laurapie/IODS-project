@@ -78,5 +78,3 @@ head(data3)
 dim(data3)
 
 # then, push to Github
-
-
