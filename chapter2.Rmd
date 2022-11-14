@@ -64,6 +64,7 @@ p1 <- ggplot(student2014, aes(x = attitude, y = points))+
 p1
 
 ```
+
 # Students that had a higher points with attitude obtained also higher exam points. 
 
 ```{r}
@@ -87,4 +88,27 @@ p3 <- ggplot(student2014, aes(x = stra, y = surf))+
 p3
 
 ```
+
 # Students that used surface techniques used strategic techniques less likely. 
+
+# Testing the model 
+
+# The selected three explanatory variables are: stra, surf and deep. Response variable is points
+
+```{r}
+my_model <- lm(points ~ attitude + stra + surf + deep, data = student2014)
+summary(my_model)
+
+```
+
+# Only attitude seems to correlate with the exam points on *** (p<0.001)
+
+# Removing the excess of variables from the model 
+
+```{r}
+my_model2 <- lm(points ~ attitude, data = student2014)
+summary(my_model2)
+
+```
+
+# Now the model fits the data better
