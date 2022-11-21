@@ -1,0 +1,102 @@
+---
+title: "Chapter3.rmd"
+output: html_document
+date: "2022-11-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Reading the data and exploring the structure
+
+````{r}
+getwd()
+setwd("/home/local/pielaura/Documents/zasemaemulaattori/Documents/kurssit/Introduction_to_open_data_science/excerices_1/IODS-project/data")
+studentalc <- read.csv("alc.csv", sep = ",")
+```
+
+## The names of the variables and a brief description of the data
+
+```{r}
+colnames(studentalc)
+dim(studentalc)
+```
+Data consists of questionnaires about alcohol consumption of secondary school students in Portugal. Data has variables concerning grades, demography, social features and school features. Dataset is a combination of two datasets addressing the effect of these variables on mathematics and Portuguese. There are 370 observations and 35 variables, 
+
+## Relationship between high and low alcohol consumption on a selection of variables
+I am investigating whether age, absence, sex or higher have an effect on whether the student consumes high or low amounts of alcohol. 
+
+* Age - student's age (numeric: from 15 to 22) 
+* Absence = number of school absences (numeric: from 0 to 93) 
+* Sex = student's sex (binary: 'F' - female or 'M' - male) 
+* Higher = wants to take higher education (binary: yes or no)
+
+### Hypotheses
+* age is not expected to have an effect on the alcohol consumption
+* number of school absences is higher when the level of alcohol consumption increases
+* males are predicted to have higher alcohol consumption than females. 
+* students that want to take higher education use less alcohol than students that do not want to do so. 
+
+## Data exploration
+
+Firstly let's look at a bar plot made from each focal variable to see how the data looks like
+```{r}
+library(tidyr); library(dplyr); library(ggplot2)
+focals <- select(studentalc, age, high_use, absences, sex, higher)
+glimpse(focals)
+focals$higher <- as.factor(focals$higher)
+focals$sex <- as.factor(focals$sex)
+gather(focals) %>% glimpse
+gather(focals) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+```
+
+
+Then let's make a barplot showing the relationship between alcohol consumption and the focal variables
+```{r}
+
+g2 <- ggplot(focals, aes(x = high_use, y = absences, col = sex))
+g2 + geom_boxplot() + ylab("absences") + ggtitle("Student's absences  by alcohol consumption and sex")
+
+```
+
+
+Seems like the students that have more absences quite often use more alcohol. This is more clear in males. However, the averages seem quite similar. 
+
+```{r}
+g3 <- ggplot(focals, aes(x = high_use, y = age))
+
+# define the plot as a boxplot and draw it
+g3 <- g3 +  geom_boxplot() + ylab("age")
+
+# initialize a plot of high_use and age
+g3 <- ggplot(focals, aes(x = high_use, y = age, col = sex))
+
+# define the plot as a box plot and draw it
+g3 + geom_boxplot() + ylab("age") + ggtitle("Student's age by alcohol consumption and sex")
+
+```
+
+
+Sano tästä jotain
+
+Next I will make cross tabulations of the binary variables that are age, higher and sex
+
+```{r}
+table(high_use = focals$high_use, sex = focals$sex)
+table(high_use = focals$high_use, sex = focals$sex, higher = focals$higher)
+
+```
+Although there are less males on the dataset, there are still more males that use alcohol in high amounts. There are very few students that did not plan to go for higher education, thus a meaningful comparison between the differences is questionable. 
+
+## Logistic regression
+
+Use logistic regression to statistically explore the relationship between your chosen variables and the binary high/low alcohol consumption variable as the target variable. Present and interpret a summary of the fitted model. Present and interpret the coefficients of the model as odds ratios and provide confidence intervals for them. Interpret the results and compare them to your previously stated hypothesis. Hint: If your model includes factor variables see for example the RHDS book or the first answer of this stackexchange thread on how R treats and how you should interpret these variables in the model output (or use some other resource to study this). (0-5 points)
+
+Using the variables which, according to your logistic regression model, had a statistical relationship with high/low alcohol consumption, explore the predictive power of you model. Provide a 2x2 cross tabulation of predictions versus the actual values and optionally display a graphic visualizing both the actual values and the predictions. Compute the total proportion of inaccurately classified individuals (= the training error) and comment on all the results. Compare the performance of the model with performance achieved by some simple guessing strategy. (0-3 points)
