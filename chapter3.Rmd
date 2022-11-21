@@ -8,6 +8,7 @@ date: "2022-11-21"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Logistic regression
 ## Diary
 This week I learned more about logistic regression. This is probably one of the most useful parts of the course for me since I am going to use these methods on my seed bank germination data. Thus, I will likely return to these exercises and methods many times in the near future since this time I couldn't use as much time on these exercises as I would have wanted. This week I did not have any problems with committing or pushing, yay! 
 
