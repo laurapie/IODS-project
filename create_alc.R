@@ -1,5 +1,6 @@
 # Laura Pietikäinen 21.11.2022. Data was sourced from IDOS cource materials and it originates to UCI Machine Learning Repository. 
-# Data consists of questionnaires about alcohol consumption of secondary school students in Portugal. 
+# Data consists of questionnaires about alcohol consumption of secondary school students in Portugal. Excerise set 3 has been used as a
+# source for obtaining the codes. 
 
 # read the data and explore the structure
 
@@ -20,20 +21,20 @@ str(student_por)
 
 library(dplyr)
 
-# give the columns that vary in the two data sets
+# columns that differ between datasets. 
 free_cols <- c("failures", "paid", "absences", "G1", "G2", "G3")
 
-# the rest of the columns are common identifiers used for joining the data sets
+# the rest of the columns can be used as identifiers. 
 join_cols <- setdiff(colnames(student_por), free_cols)
 join_cols
 
 # join the two data sets by the selected identifiers
 math_por <- inner_join(student_mat, student_por, by = join_cols)
 
-# look at the column names of the joined data set
+# column names of the new dataset
 colnames(math_por)
 
-# glimpse at the joined data set
+# how does the new data set look like
 summary(math_por)
 str(math_por)
 structure(math_por)
@@ -42,13 +43,13 @@ dim(math_por)
 # Get rid of the duplicate records in the joined data set. Either a) copy the solution from the exercise "3.3 The if-else structure"
 # to combine the 'duplicated' answers in the joined data, or b) write your own solution to achieve this task. (1 point)
 
-# print out the column names of 'math_por'
+# column names
 colnames(math_por)
 
-# create a new data frame with only the joined columns
+# include only the joined columns to a new data frame. 
 alc <- select(math_por, all_of(join_cols))
 
-# print out the columns not used for joining (those that varied in the two data sets)
+# print out the differing columns. 
 free_cols
 
 # for every column name not used for joining...
