@@ -8,11 +8,8 @@ date: "2022-11-21"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Diary
+This week I learned more about logistic regression. This is probably one of the most useful parts of the course for me since I am going to use these methods on my seed bank germination data. Thus, I will likely return to these exercises and methods many times in the near future since this time I couldn't use as much time on these exercises as I would have wanted. This week I did not have any problems with committing or pushing, yay! 
 
 ## Reading the data and exploring the structure
 
@@ -67,7 +64,7 @@ g2 + geom_boxplot() + ylab("absences") + ggtitle("Student's absences  by alcohol
 ```
 
 
-Seems like the students that have more absences quite often use more alcohol. This is more clear in males. However, the averages seem quite similar. 
+Seems like the students that have more absences quite often use more alcohol. The difference is more clear in males.
 
 ```{r}
 g3 <- ggplot(focals, aes(x = high_use, y = age))
@@ -83,8 +80,7 @@ g3 + geom_boxplot() + ylab("age") + ggtitle("Student's age by alcohol consumptio
 
 ```
 
-
-Sano tästä jotain
+Older males seem to be using more alcohol than younger ones. For females there is no clear difference except in the average age, which seems to be lower in high alcohol-usage group. 
 
 Next I will make cross tabulations of the binary variables that are age, higher and sex
 
@@ -93,10 +89,69 @@ table(high_use = focals$high_use, sex = focals$sex)
 table(high_use = focals$high_use, sex = focals$sex, higher = focals$higher)
 
 ```
-Although there are less males on the dataset, there are still more males that use alcohol in high amounts. There are very few students that did not plan to go for higher education, thus a meaningful comparison between the differences is questionable. 
+Although there are less males in the data, there are still more males that use alcohol in high amounts. There are very few students that did not plan to go for higher education, thus a meaningful comparison between the differences is questionable. 
 
 ## Logistic regression
 
-Use logistic regression to statistically explore the relationship between your chosen variables and the binary high/low alcohol consumption variable as the target variable. Present and interpret a summary of the fitted model. Present and interpret the coefficients of the model as odds ratios and provide confidence intervals for them. Interpret the results and compare them to your previously stated hypothesis. Hint: If your model includes factor variables see for example the RHDS book or the first answer of this stackexchange thread on how R treats and how you should interpret these variables in the model output (or use some other resource to study this). (0-5 points)
+Relationship between the chosen variables and the high/low alcohol consumption. The chosen variables are age, absence, sex, higher
 
-Using the variables which, according to your logistic regression model, had a statistical relationship with high/low alcohol consumption, explore the predictive power of you model. Provide a 2x2 cross tabulation of predictions versus the actual values and optionally display a graphic visualizing both the actual values and the predictions. Compute the total proportion of inaccurately classified individuals (= the training error) and comment on all the results. Compare the performance of the model with performance achieved by some simple guessing strategy. (0-3 points)
+```{r}
+
+m1 <- glm(high_use ~ age + absences + sex + higher, data = studentalc, family = "binomial")
+# summary of the model 
+summary(m1)
+# coefficients
+co <- coef(m1)
+# coefficients as odds ratios
+or <- coef(m1) %>% exp
+
+# confidence intervals
+ci <- confint(m1) %>% exp
+
+# odds ratios with confidence intervals
+cbind(or, ci)
+
+
+
+```
+
+Number of absences and male gender had significant effects on the probability of using high amounts of alcohol just as was hypothesized. Age did not have a significant effect on alcohol use, which was also expected. Plans on getting a higher education did not have an effect on the probability of a student to use high amounts of alcohol. However, there were only 15 students that did not plan on getting a higher education. Males were almost three times more likely using high amounts of alcohol than females. Also the as number of absences increased by one, increased the odds that the student uses high amounts of alcohol by 1.09. 
+
+## Predictive power of my model
+
+```{r}
+# variables wit a statistical relationship with alcohol consumption
+m2 <- glm(high_use ~ absences + sex, data = studentalc, family = "binomial")
+
+# probability of high use (prediction)
+probabilities <- predict(m2, type = "response")
+
+# predicted probabilities to the original data
+studentalc <- mutate(studentalc, probability = probabilities)
+
+# prediction of high use
+studentalc <- mutate(studentalc, prediction = probability > 0.5)
+
+# how it looks like? 
+select(studentalc, absences, sex, high_use, probability, prediction) %>% tail(10)
+
+
+# tabulate the target variable versus the predictions
+table(high_use = studentalc$high_use, prediction = studentalc$prediction)
+
+```
+
+```{r}
+
+# plot probability vs. prediction
+g <- ggplot(studentalc, aes(x = probability, y = high_use, col = prediction))+ggtitle("Probability vs. prediction") + geom_point()
+g
+
+# tabulate the target variable versus the predictions
+table(high_use = studentalc$high_use, prediction = studentalc$prediction) %>% prop.table() %>% addmargins()
+
+```
+Training error (total proportion of inaccurately classified individuals)
+0.23243243 + 0.02162162
+= 0.254054
+
