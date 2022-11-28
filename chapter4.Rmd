@@ -1,5 +1,5 @@
 ---
-title: chapter 4
+title: Chapter 4
 output: html_document
 date: "2022-11-28"
 ---
@@ -9,8 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Loading the boston data and checking the structure
-
-Load the Boston data from the MASS package. Explore the structure and the dimensions of the data and
 
 ```{r}
 library(MASS)
@@ -31,9 +29,19 @@ Dataset has 506 observations and 14 variables. All variables are numerical and e
 ## Graphical overview of the data
 
 ```{r}
-pairplot <- pairs(Boston)
-pairplot
+# plot matrix of the variables
+library(ggplot2)
+library("GGally")
+ggpairs(Boston[1:8])
 ```
+
+
+```{r}
+
+ggpairs(Boston[8:14])
+```
+
+There are plenty of variables in the data that correlate significantly as can be seen from the Pearson correlation coefficients that are displayed on the right hand side of the plot. Next, I will use a correlation matrix to get a better view and to be able to distinguish the variables that stand up from the data. 
 
 ```{r}
 cor_matrix <- cor(Boston) 
@@ -48,7 +56,19 @@ corrplot(cor_matrix, method="circle")
 
 ```
 
-Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-2 points)
+Correlation plot of the variables in the Boston data
+
+High positive correlation: 
+
+Tax (full value property tax-rate per 10 000 dollars) and rad (index of accessibility to radial highways) 0.910 \*\*\*. 
+
+Highest negative correlations: 
+
+Lstat (lower status of the populaitons) and medv (median value of owner occupied houses in 1000$s) -0.738\*\*\*
+
+Age (proportion of owner occupied units build before 1940) and dis (weighed mean of distances to five boston employment centers) -0.708\*\*\*, 
+
+Indus (proportion of non retail business acres per town) and dis (weighed mean of distances to five boston employment centers) -0.708\*\*\*. 
 
 ## Standardize the dataset and print out summaries of the scaled data
 Scaling means that the column means are first subtracted from the columns and then divided by the standard deviation. Scaling will shift the mean to 0 as we can see here. 
@@ -62,7 +82,8 @@ class(boston_scaled)
 boston_scaled <- as.data.frame(boston_scaled)
 
 ```
-## Turn crime rate into categorical variable use quantiles as the break points, replace the old crime rate with the new one. 
+
+## Turn crime rate into categorical variable, use quantiles as the break points and replace the old crime rate variable with the new one
 
 ```{r}
 
@@ -110,7 +131,7 @@ test <- dplyr::select(test, -crime)
 ```
 
 
-## Fit the linear discriminant analysis on the train set using the categorical crime rate as the target and all other variables as predictors. Draw the LDA plot. 
+## Fit the linear discriminant analysis on the train set using the categorical crime rate as the target and all other variables as predictors and draw the LDA plot
 
 ```{r}
 library(MASS)
@@ -136,7 +157,8 @@ classes <- as.numeric(train$crime)
 plot(lda.fit, dimen = 2, col = classes, pch = classes)
 lda.arrows(lda.fit, myscale = 2)
 ```
-##  Predict the classes with the LDA model on the test data and cross tabulate the results with crime categories from the test set. 
+
+##  Predict the classes with the LDA model on the test data and cross tabulate the results with crime categories from the test set
 
 Crime categories have already been saved from the test set and categorical crime variable has been removed from the test dataset. 
 
@@ -150,7 +172,10 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 
 ```
-Comment on the results. (0-3 points)
+
+Predicted vs. correct results interpretation: Classifier predicted the crime rates well in the case of high crime rates.  Low and med_high had most inaccurately predicted instances. both of these categories had over 40% error rates. 
+
+
 
 ## Reload and standardize the Boston dataset
 ```{r}
@@ -163,7 +188,7 @@ class(boston_scaled)
 boston_scaled <- as.data.frame(boston_scaled)
 ```
 
-## Calculate the distances between the observations.
+## Calculate the distances between the observations
 
 ```{r}
 # euclidean distance matrix
@@ -171,18 +196,20 @@ dist_eu <- dist(boston_scaled)
 
 # look at the summary of the distances
 summary(dist_eu)
-
 ```
 
-## Run k-means algorithm on the dataset. 
-```{r}
-
-```
-
-Investigate what is the optimal number of clusters and run the algorithm again. Visualize the clusters (for example with the pairs() or ggpairs() functions, where the clusters are separated with colors) and interpret the results. (0-4 points)
+## Run k-means algorithm on the dataset
 
 ```{r}
+library(tidyverse)
+# k-means 
+km <- kmeans(Boston, centers = 4)
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Optimal number of clusters and visualization of the clusters
+
+This is where I ran into an issue. I can't make the exercise to work. If I try to run the code to calculate the total within sum of squares, the function
+ twcss <- sapply(1:k_max, function(k){kmeans(Boston, k)$tot.withinss}) produces following error: 
+ "Warning: numerical expression has 9 elements: only the first usedError in 1:k_max : NA/NaN argument."
