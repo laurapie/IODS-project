@@ -14,7 +14,7 @@ This week I learned more about logistic regression. This is probably one of the 
 
 ## Reading the data and exploring the structure
 
-````{r}
+```{r}
 getwd()
 setwd("/home/local/pielaura/Documents/zasemaemulaattori/Documents/kurssit/Introduction_to_open_data_science/excerices_1/IODS-project/data")
 studentalc <- read.csv("alc.csv", sep = ",")
