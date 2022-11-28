@@ -1,0 +1,125 @@
+---
+title: chapter 4
+output: html_document
+date: "2022-11-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading the boston data and checking the structure
+
+Load the Boston data from the MASS package. Explore the structure and the dimensions of the data and
+
+```{r}
+library(MASS)
+
+# load the data
+data("Boston")
+
+# explore the dataset
+str(Boston)
+summary(Boston)
+dim(Boston)
+```
+
+
+Dataset has 506 observations and 14 variables. All variables are numerical and each one describes housing values in Boston. More info on the variables can be found from [here](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html). 
+
+
+## Graphical overview of the data
+
+```{r}
+pairplot <- pairs(Boston)
+pairplot
+```
+
+```{r}
+cor_matrix <- cor(Boston) 
+cor_matrix <- round(cor_matrix, digits = 2)
+
+# rounded correlation matrix
+cor_matrix
+
+# visualize the correlation matrix
+library(corrplot)
+corrplot(cor_matrix, method="circle")
+
+```
+
+Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them. (0-2 points)
+
+## Standardize the dataset and print out summaries of the scaled data
+Scaling means that the column means are first subtracted from the columns and then divided by the standard deviation. Scaling will shift the mean to 0 as we can see here. 
+
+```{r}
+boston_scaled <- scale(Boston)
+summary(boston_scaled)
+summary(Boston)
+# change into a data frame for future use
+class(boston_scaled)
+boston_scaled <- as.data.frame(boston_scaled)
+
+```
+## Turn crime rate into categorical variable use quantiles as the break points, replace the old crime rate with the new one. 
+
+```{r}
+
+summary(boston_scaled$crim)
+
+# creating a quantile vector
+bins <- quantile(boston_scaled$crim)
+bins
+
+# next a categorical variable
+labelsadd <- c("low", "med_low", "med_high", "high")
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = labelsadd)
+# how does it look like?
+table(crime)
+
+# Replacing the old crim with the new catergorical crim
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+boston_scaled <- data.frame(boston_scaled, crime)
+
+
+```
+
+## Divide the dataset into train and test sets (80% to the train set)
+
+```{r}
+# number of rows
+nrow(boston_scaled)
+n <- 506
+
+# randomly select 80% of the rows
+ind <- sample(n,  size = n * 0.8)
+
+# create the train set
+train <- boston_scaled[ind,]
+
+# and the test set
+test <- boston_scaled[-ind,]
+
+# correct classes from the test data 
+correct_classes <- test$crime
+
+# remove the crime variable from test data
+test <- dplyr::select(test, -crime)
+
+```
+
+
+## Fit the linear discriminant analysis on the train set using the categorical crime rate as the target and all other variables as predictors. Draw the LDA plot. 
+
+
+
+Save the crime categories from the test set and then remove the categorical crime variable from the test dataset. Then predict the classes with the LDA model on the test data. Cross tabulate the results with the crime categories from the test set. Comment on the results. (0-3 points)
+
+Reload the Boston dataset and standardize the dataset (we did not do this in the Exercise Set, but you should scale the variables to get comparable distances). Calculate the distances between the observations. Run k-means algorithm on the dataset. Investigate what is the optimal number of clusters and run the algorithm again. Visualize the clusters (for example with the pairs() or ggpairs() functions, where the clusters are separated with colors) and interpret the results. (0-4 points)
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
