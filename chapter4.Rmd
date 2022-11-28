@@ -8,7 +8,7 @@ date: "2022-11-28"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Loading the boston data and checking the structure
+## Loading the Boston data and checking the structure
 
 ```{r}
 library(MASS)
