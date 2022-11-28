@@ -37,7 +37,6 @@ ggpairs(Boston[1:8])
 
 
 ```{r}
-
 ggpairs(Boston[8:14])
 ```
 
@@ -46,7 +45,6 @@ There are plenty of variables in the data that correlate significantly as can be
 ```{r}
 cor_matrix <- cor(Boston) 
 cor_matrix <- round(cor_matrix, digits = 2)
-
 # rounded correlation matrix
 cor_matrix
 
